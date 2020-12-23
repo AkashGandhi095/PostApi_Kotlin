@@ -35,6 +35,8 @@ class MainActivity : AppCompatActivity() {
         fetchPosts()
 
 
+
+
     }
 
     private fun initViews() {
@@ -63,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         RetrofitService.postService
             .postList().enqueue(object : Callback<List<Post>> {
                     override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
-                        Log.d(TAG, "onResponse: posts : ${response.body()}")
+                        //Log.d(TAG, "onResponse: posts : ${response.body()}")
                         if (response.isSuccessful) {
                             bindPostToList(response.body())
                         } else {
