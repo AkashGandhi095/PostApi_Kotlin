@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.postsapp.adapter.OnAdapterClick
 import com.example.postsapp.adapter.PostAdapter
+import com.example.postsapp.appUtils.LoadingDialog
 import com.example.postsapp.model.Post
 import com.example.postsapp.retrofitUtils.ApiService
 import com.example.postsapp.retrofitUtils.RetrofitService
@@ -27,7 +28,6 @@ class MainActivity : AppCompatActivity() , OnAdapterClick {
     private lateinit var postRecycleView :RecyclerView
     private lateinit var postAdapter :PostAdapter
     private lateinit var postList: List<Post>
-    private lateinit var loadingDialog :AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() , OnAdapterClick {
     }
 
     private fun initViews() {
+
         postRecycleView = findViewById(R.id.rv_posts)
         postList = listOf()
         postAdapter = PostAdapter(postList , this)
@@ -51,20 +52,14 @@ class MainActivity : AppCompatActivity() , OnAdapterClick {
             adapter = postAdapter
         }
 
-        loadingDialog = MaterialAlertDialogBuilder(this)
-                .setView(R.layout.loading_oview).create()
+        LoadingDialog.createLoadingDialog(this)
 
-
-        loadingDialog.apply {
-            setCancelable(false)
-            setCanceledOnTouchOutside(false)
-        }
 
     }
 
     private fun fetchPosts() {
-        Log.d(RetrofitService.TAG, "fetchPosts: getPostApiService hashCode : ${RetrofitService.postService.hashCode()}")
-        loadingDialog.show()
+
+        LoadingDialog.showLoadingDialog()
         RetrofitService.postService
             .postList().enqueue(object : Callback<List<Post>> {
                     override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
@@ -75,12 +70,13 @@ class MainActivity : AppCompatActivity() , OnAdapterClick {
                             Log.d(TAG, "onResponse: errorResponse : ${response.errorBody()}")
                         }
 
-                        loadingDialog.hide()
+                        LoadingDialog.hideLoadingDialog()
                     }
 
                     override fun onFailure(call: Call<List<Post>>, t: Throwable) {
                         Log.d(TAG, "onFailure: error : ${t.localizedMessage}")
-                        loadingDialog.hide()
+
+                        LoadingDialog.hideLoadingDialog()
                     }
                 })
     }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.example.postsapp.appUtils.LoadingDialog
 import com.example.postsapp.model.Post
 import com.example.postsapp.retrofitUtils.RetrofitService
 import com.google.android.material.textview.MaterialTextView
@@ -42,7 +43,8 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun fetchPostDetails(id :Int) {
-        Log.d(TAG, "fetchPostDetails: $id")
+
+        LoadingDialog.showLoadingDialog()
         RetrofitService.postService.postDetails(id).enqueue(object : Callback<Post> {
 
             override fun onResponse(call: Call<Post>, response: Response<Post>) {
@@ -52,10 +54,13 @@ class DetailActivity : AppCompatActivity() {
                 } else {
                     Log.d(TAG, "onResponse: Error : ${response.errorBody()}")
                 }
+
+                LoadingDialog.hideLoadingDialog()
             }
 
             override fun onFailure(call: Call<Post>, t: Throwable) {
                 Log.d(TAG, "onFailure: ${t.localizedMessage}")
+                LoadingDialog.hideLoadingDialog()
             }
 
         })
@@ -67,6 +72,8 @@ class DetailActivity : AppCompatActivity() {
         userIdTextV = findViewById(R.id.userIdTextView)
         titleTextV = findViewById(R.id.titleTextView)
         bodyTextV = findViewById(R.id.bodyTextView)
+
+        LoadingDialog.createLoadingDialog(this)
 
     }
 
