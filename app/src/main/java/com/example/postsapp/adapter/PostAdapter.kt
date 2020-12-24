@@ -8,7 +8,8 @@ import com.example.postsapp.R
 import com.example.postsapp.model.Post
 import com.google.android.material.textview.MaterialTextView
 
-class PostAdapter (private var postList :List<Post>) : RecyclerView.Adapter<PostAdapter.PostHolder>() {
+class PostAdapter (private var postList :List<Post> , private val onAdapterClick: OnAdapterClick)
+    : RecyclerView.Adapter<PostAdapter.PostHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostAdapter.PostHolder =
@@ -30,8 +31,11 @@ class PostAdapter (private var postList :List<Post>) : RecyclerView.Adapter<Post
         this.postList = postList
     }
 
-    inner class PostHolder(itemView :View) :RecyclerView.ViewHolder(itemView) {
+    inner class PostHolder(itemView :View) :RecyclerView.ViewHolder(itemView) , View.OnClickListener {
 
+        init {
+            itemView.setOnClickListener(this)
+        }
         private val titleText = itemView.findViewById<MaterialTextView>(R.id.tv_title)
         private val bodyText = itemView.findViewById<MaterialTextView>(R.id.tv_body)
 
@@ -39,6 +43,10 @@ class PostAdapter (private var postList :List<Post>) : RecyclerView.Adapter<Post
 
             titleText.text = post.title
             bodyText.text = post.body
+        }
+
+        override fun onClick(v: View?) {
+            onAdapterClick.onClick(postList[adapterPosition]._id)
         }
 
     }

@@ -1,11 +1,14 @@
 package com.example.postsapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.postsapp.adapter.OnAdapterClick
 import com.example.postsapp.adapter.PostAdapter
 import com.example.postsapp.model.Post
 import com.example.postsapp.retrofitUtils.ApiService
@@ -15,7 +18,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , OnAdapterClick {
 
     companion object {
         private const val TAG = "MainActivityClass"
@@ -42,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         postRecycleView = findViewById(R.id.rv_posts)
         postList = listOf()
-        postAdapter = PostAdapter(postList)
+        postAdapter = PostAdapter(postList , this)
         postRecycleView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = postAdapter
@@ -91,6 +94,14 @@ class MainActivity : AppCompatActivity() {
             }
             postAdapter.setPosts(postList)
             postAdapter.notifyDataSetChanged()
+        }
+    }
+
+    override fun onClick(id :Int) {
+        val intent = Intent(this , DetailActivity::class.java)
+        intent.apply {
+            putExtra("_ID" , id)
+            startActivity(this)
         }
     }
 
